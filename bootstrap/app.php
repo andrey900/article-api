@@ -14,9 +14,23 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware) {
         //
-        $middleware->prependToGroup('api', [
-            ForceJsonResponse::class,
-        ]);
+        $middleware
+            ->remove([
+                \Illuminate\Http\Middleware\TrustProxies::class,
+                \Illuminate\Http\Middleware\HandleCors::class,
+                \Illuminate\Foundation\Http\Middleware\PreventRequestsDuringMaintenance::class,
+                \Illuminate\Foundation\Http\Middleware\TrimStrings::class,
+                \Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull::class,
+            ])
+            ->web(append: [
+                \Illuminate\Http\Middleware\TrustProxies::class,
+                \Illuminate\Http\Middleware\HandleCors::class,
+                \Illuminate\Foundation\Http\Middleware\PreventRequestsDuringMaintenance::class,
+                \Illuminate\Foundation\Http\Middleware\TrimStrings::class,
+                \Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull::class
+            ])->api(prepend: [
+                ForceJsonResponse::class,
+            ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //
